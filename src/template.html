@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>My-Todo-List</title>
+    </head>
+    <body>
+        <div id="app">
+            <div id="project">
+                <h1 class="project-title">My-Todo-List</h1>
+                <div class="project-action">
+                    <ul class="project-action-list">
+                        <li>
+                            <button
+                                class="project-action-item"
+                                id="newProjectBtn"
+                            >
+                                Add
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                class="project-action-item project-action-item__disable"
+                                id="clearProjectBtn"
+                            >
+                                Remove
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="project-list"></ul>
+                <div></div>
+            </div>
+            <div id="container">
+                <div id="todos-tab">
+                    <h2 class="todos-tab-item">Notes</h2>
+                    <h2 class="todos-tab-item">Checklist</h2>
+                </div>
+                <div id="todos">
+                    <ul class="todos-empty todos-content">
+                        One day this will be full of ideas
+                    </ul>
+                    <button id="todo-add">+</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

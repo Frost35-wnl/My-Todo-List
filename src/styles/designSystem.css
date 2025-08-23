@@ -1,0 +1,8 @@
+/************* Design System *************/
+:root {
+    --background-color: #f5f5f5;
+    --primary-color: white;
+    --secondary-color: #808080;
+    --text-color: #999999;
+    --project-color: #0288d1;
+}

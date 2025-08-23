@@ -1,0 +1,115 @@
+#project {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 3rem;
+    height: 100vh;
+    min-width: 20%;
+    width: 100px;
+}
+
+.project-title {
+    font-size: 2.5rem;
+    margin-bottom: 1em;
+    color: var(--project-color);
+}
+
+/*list item*/
+
+.project-list {
+    list-style-type: none;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.project-item {
+    border: 1px var(--secondary-color) solid;
+    color: var(--project-color);
+    border-radius: 8px;
+    padding: 0.8em;
+    margin-bottom: 1.2em;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-item:hover,
+.project-item__active {
+    background-color: var(--project-color);
+    color: white;
+    border: none;
+}
+
+/*action button*/
+
+.project-action {
+    margin-bottom: 2em;
+}
+
+.project-action-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.project-action-item {
+    border: none;
+    background-color: var(--secondary-color);
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 0.8em 1.5em;
+    cursor: pointer;
+    color: var(--primary-color);
+}
+
+#newProjectBtn {
+    background-color: #7cb342;
+}
+
+.project-action-item__remove {
+    background-color: rgb(255, 70, 70);
+    color: white;
+    border: none;
+}
+
+.project-action-item__disable {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/*projcet content*/
+
+.project-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.project-item-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--project-color);
+}
+
+.project-item-description {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-item-todoCount {
+    font-weight: 500;
+}
+
+/*project content*/
+.project-item:hover .project-item-name,
+.project-item__active .project-item-name {
+    color: var(--primary-color);
+}
+
+.project-item:hover .project-item-description,
+.project-item__active .project-item-description {
+    color: var(--primary-color);
+}
