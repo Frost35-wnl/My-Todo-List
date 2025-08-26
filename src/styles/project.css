@@ -5,6 +5,7 @@
     height: 100vh;
     min-width: 20%;
     width: 100px;
+    overflow-y: hidden;
 }
 
 .project-title {
@@ -17,8 +18,9 @@
 
 .project-list {
     list-style-type: none;
-    overflow-y: auto;
+    overflow-y: scroll;
     padding: 0;
+    height: 70vh;
 }
 
 .project-item {
