@@ -47,8 +47,7 @@ class Project {
   }
 
   removeTodo(todoId) {
-    const index = this.#todos.findIndex((todo) => todo.id === todoId);
-    this.#todos = this.#todos.splice(index, 1);
+    this.#todos = this.#todos.filter((todo) => todo.id !== todoId);
   }
 
   getTodos() {

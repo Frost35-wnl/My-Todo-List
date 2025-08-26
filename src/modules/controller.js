@@ -6,8 +6,9 @@ import { renderProjects, renderPriority, renderTodos } from "./dom.js";
 class ProjectController {
   constructor() {
     this.projects = loadAllProjects();
-    this.currentProject = this.projects[0] || null;
+    this.currentProject = this.projects.length > 0 ? this.projects[0] : null;
     this.currentTodoType = "note";
+    this.currentEditingTodo = null;
     this.init();
     this.priorityManager = new PriorityManager();
   }
@@ -16,6 +17,13 @@ class ProjectController {
     this.currentTodoType = "note";
     this.priorityManager = new PriorityManager();
     this.projects = loadAllProjects();
+
+    if (this.projects.length > 0) {
+      this.currentProject = this.projects[0];
+    } else {
+      this.currentProject = null;
+    }
+
     this.#setupEventListeners();
     renderPriority(this.priorityManager);
     renderProjects(this.projects, this.currentProject, this.currentTodoType);
@@ -60,24 +68,24 @@ class ProjectController {
     });
 
     const openDialog = document.querySelector("#open-dialog");
-    const dialog = document.querySelector("dialog");
+    const dialogTodo = document.querySelector("#newTodoDiag");
     if (openDialog) {
       openDialog.addEventListener("click", () => {
         if (!this.currentProject) {
           alert("Please select a project first");
           return;
         }
-        if (dialog) {
-          dialog.showModal();
+        if (dialogTodo) {
+          dialogTodo.showModal();
         }
       });
     }
 
-    const closeDialog = document.querySelector("#close-dialog");
-    if (closeDialog) {
-      closeDialog.addEventListener("click", () => {
-        if (dialog) {
-          dialog.close();
+    const closeDialogTodo = document.querySelector("#close-dialog-todo");
+    if (closeDialogTodo) {
+      closeDialogTodo.addEventListener("click", () => {
+        if (dialogTodo) {
+          dialogTodo.close();
         }
       });
     }
@@ -88,7 +96,7 @@ class ProjectController {
       addTodoBtn.addEventListener("click", (e) => {
         e.preventDefault();
 
-        const newTodo = createTodoFromForm(todoForm);
+        const newTodo = createTodoFromForm(todoForm, this.currentTodoType);
         this.currentProject.addTodo(newTodo);
 
         saveAllProjects(this.projects);
@@ -98,7 +106,7 @@ class ProjectController {
           this.currentTodoType,
         );
         alert("Todo added");
-        dialog.close();
+        dialogTodo.close();
       });
     }
 
@@ -122,6 +130,34 @@ class ProjectController {
         });
       });
     }
+
+    document.addEventListener("todoSelected", (e) => {
+      this.showNoteDialog(e.detail.todo);
+    });
+
+    const saveNoteBtn = document.getElementById("saveNote");
+    if (saveNoteBtn) {
+      saveNoteBtn.addEventListener("click", (e) => {
+        if (!this.currentProject) return;
+        e.preventDefault();
+        this.saveNoteContent();
+      });
+    }
+
+    const closeNoteBtn = document.getElementById("close-dialog-note");
+    if (closeNoteBtn) {
+      closeNoteBtn.addEventListener("click", () => {
+        this.closeNoteDialog();
+      });
+    }
+
+    document.addEventListener("todoDeleted", (e) => {
+      const todo = e.detail.todo;
+
+      if (confirm(`Are you sure you want to delete "${todo.title}"?`)) {
+        this.deleteTodo(todo);
+      }
+    });
   }
 
   addProject(project) {
@@ -146,6 +182,49 @@ class ProjectController {
     saveAllProjects(this.projects);
     renderProjects(this.projects, this.currentProject, this.currentTodoType);
   }
+
+  showNoteDialog(todo) {
+    this.currentEditingTodo = todo;
+    const dialog = document.querySelector("#noteDiag");
+    const textarea = document.querySelector("#note-text");
+
+    if (dialog && textarea) {
+      textarea.value = todo.content || "";
+      dialog.showModal();
+    }
+  }
+
+  closeNoteDialog() {
+    const noteDialog = document.querySelector("#noteDiag");
+    if (noteDialog) {
+      noteDialog.close();
+      this.currentEditingTodo = null;
+    }
+  }
+
+  saveNoteContent() {
+    if (!this.currentEditingTodo) return;
+
+    const textarea = document.querySelector("#note-text");
+    const noteDialog = document.querySelector("#noteDiag");
+    if (textarea && noteDialog) {
+      this.currentEditingTodo.setContent(textarea.value);
+      saveAllProjects(this.projects);
+      renderProjects(this.projects, this.currentProject, this.currentTodoType);
+      noteDialog.close();
+      this.currentEditingTodo = null;
+      alert("Note saved successfully!");
+    }
+  }
+
+  deleteTodo(todo) {
+    if (!this.currentProject) return;
+
+    this.currentProject.removeTodo(todo.id);
+    saveAllProjects(this.projects);
+    renderProjects(this.projects, this.currentProject, this.currentTodoType);
+    alert("Todo deleted successfully!");
+  }
 }
 
 const projectController = new ProjectController();
@@ -168,21 +247,20 @@ function randomColor() {
   return color;
 }
 
-function createTodoFromForm(formElement) {
+function createTodoFromForm(formElement, todoType) {
   const formData = new FormData(formElement);
-
   const title = formData.get("todo-input-title");
-  const type = formData.get("todo-input-type") || "note";
-  const date = new Date(formData.get("todo-input-date"));
+  const dateStr = formData.get("todo-input-date");
+  const dueDate = dateStr ? new Date(dateStr) : new Date();
   const desc = formData.get("todo-input-desc");
   const prio = formData.get("todo-input-prio");
 
   return TodoFactory.createTodo(
     crypto.randomUUID(),
-    type,
+    todoType,
     title,
     desc,
-    date,
+    dueDate,
     prio,
   );
 }

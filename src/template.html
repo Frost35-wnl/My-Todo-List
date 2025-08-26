@@ -34,8 +34,12 @@
             </div>
             <div id="container">
                 <div id="todos-tab">
-                    <h2 class="todos-tab-item" value="note">Notes</h2>
-                    <h2 class="todos-tab-item" value="checklist">Checklist</h2>
+                    <h2 class="todos-tab-item" value="note">
+                        <span>Notes</span>
+                    </h2>
+                    <h2 class="todos-tab-item" value="checklist">
+                        <span>Checklist</span>
+                    </h2>
                 </div>
                 <div id="todos">
                     <ul class="todos-empty" id="todos-content">
@@ -46,7 +50,7 @@
             </div>
         </div>
 
-        <dialog>
+        <dialog id="newTodoDiag">
             <form id="todoForm">
                 <div>
                     <label for="todo-input-title">Title : </label>
@@ -54,14 +58,8 @@
                         type="text"
                         id="todo-input-title"
                         name="todo-input-title"
+                        required
                     /><br />
-                </div>
-                <div>
-                    <label for="todo-input-type">Type : </label>
-                    <select id="todo-input-type" name="todo-input-type">
-                        <option value="note">Notes</option>
-                        <option value="checklist">Checklist</option>
-                    </select>
                 </div>
                 <div>
                     <label for="todo-input-date">Deadline : </label>
@@ -69,6 +67,7 @@
                         type="date"
                         id="todo-input-date"
                         name="todo-input-date"
+                        required
                     />
                 </div>
                 <div>
@@ -83,11 +82,31 @@
                     <button
                         formmethod="dialog"
                         value="cancel"
-                        id="close-dialog"
+                        class="close-dialog"
+                        id="close-dialog-todo"
                     >
                         Cancel
                     </button>
-                    <button id="addTodoBtn" value="default">Confirm</button>
+                    <button id="addTodoBtn" value="default" type="submit">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </dialog>
+        <dialog id="noteDiag">
+            <form>
+                <label for="note-text">Notes : </label>
+                <textarea id="note-text"></textarea>
+                <div class="dialog-buttons">
+                    <button
+                        formmethod="dialog"
+                        value="cancel"
+                        class="close-dialog"
+                        id="close-dialog-note"
+                    >
+                        Cancel
+                    </button>
+                    <button id="saveNote" value="default">Save</button>
                 </div>
             </form>
         </dialog>

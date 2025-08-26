@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import DeleteIcon from "../assets/delete.svg";
 //Projects DOM manipulation
 
 function renderProjects(projects, currentProject = null, todoType) {
@@ -11,6 +13,7 @@ function renderProjects(projects, currentProject = null, todoType) {
 
   if (!currentProject) {
     clearBtn.className = "project-action-item project-action-item__disable";
+    root.style.removeProperty("--project-color");
   } else {
     root.style.setProperty("--project-color", currentProject.color);
     clearBtn.className = "project-action-item project-action-item__remove";
@@ -104,29 +107,75 @@ function createTodoElement(todo) {
   const li = document.createElement("li");
   li.className = "todo-item";
 
-  const todoCheckBox = document.createElement("input");
-  todoCheckBox.type = "checkbox";
-  todoCheckBox.id = `todo-checkbox-${todo.id}`;
-  todoCheckBox.name = `todo-checkbox-${todo.id}`;
-  todoCheckBox.value = todo.id;
-  todoCheckBox.checked = todo.completed;
-  // todoCheckBox.addEventListener("change", () => {
-  //   todo.completed = todoCheckBox.checked;
-  //   updateTodo(todo);
-  // });
-  li.appendChild(todoCheckBox);
+  const todoInfo = document.createElement("div");
+  todoInfo.className = "todo-info";
 
   const todoTitle = document.createElement("div");
   todoTitle.className = "todo-title";
   todoTitle.textContent = todo.title;
-  li.appendChild(todoTitle);
+  todoInfo.appendChild(todoTitle);
 
   if (todo.description) {
-    const description = document.createElement("div");
-    description.className = "todo-description";
-    description.textContent = todo.description;
-    li.appendChild(description);
+    const todoDescription = document.createElement("div");
+    todoDescription.className = "todo-description";
+    todoDescription.textContent = todo.description;
+    todoInfo.appendChild(todoDescription);
   }
+
+  if (todo.type == "checklist") {
+    const todoCheckDiv = document.createElement("div");
+    todoCheckDiv.className = "todo-check-div";
+
+    const todoCompleted = document.createElement("input");
+    todoCompleted.type = "checkbox";
+    todoCompleted.checked = todo.completed;
+    //
+    todoCheckDiv.appendChild(todoCompleted);
+    todoCheckDiv.appendChild(todoInfo);
+    li.appendChild(todoCheckDiv);
+  } else {
+    li.appendChild(todoInfo);
+  }
+
+  const todoAction = document.createElement("div");
+  todoAction.className = "todo-action";
+
+  if (todo.type === "note") {
+    const showNoteBtn = document.createElement("button");
+    showNoteBtn.className = "show-note-btn";
+    showNoteBtn.textContent = "Show Note";
+
+    showNoteBtn.addEventListener("click", () => {
+      const event = new CustomEvent("todoSelected", {
+        detail: { todo },
+      });
+      document.dispatchEvent(event);
+    });
+    todoAction.appendChild(showNoteBtn);
+  }
+
+  const todoDueDate = document.createElement("div");
+  todoDueDate.textContent = format(todo.dueDate, "MM/dd/yyyy");
+  todoAction.appendChild(todoDueDate);
+
+  const todoPriority = document.createElement("div");
+  todoPriority.textContent = todo.priority;
+  todoAction.appendChild(todoPriority);
+
+  const todoDelete = document.createElement("img");
+  todoDelete.className = "delete-todo-btn";
+  todoDelete.src = DeleteIcon;
+
+  todoDelete.addEventListener("click", (e) => {
+    const event = new CustomEvent("todoDeleted", {
+      detail: { todo },
+    });
+    document.dispatchEvent(event);
+  });
+
+  todoAction.appendChild(todoDelete);
+
+  li.appendChild(todoAction);
 
   return li;
 }

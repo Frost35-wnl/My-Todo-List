@@ -30,31 +30,17 @@ class Todo {
   #description;
   #dueDate;
   #priority;
-  #completed;
 
-  constructor(
-    id,
-    title,
-    description,
-    dueDate,
-    priority,
-    priorityManager,
-    completed = false,
-  ) {
+  constructor(id, title, description, dueDate, priority, priorityManager) {
     this.#id = id;
     this.#title = title;
     this.#description = description;
     this.#dueDate = dueDate;
-    this.#completed = completed;
 
     this.priorityManager = priorityManager;
     this.#priority = priorityManager.isValid(priority)
       ? priority
       : priorityManager.default;
-  }
-
-  changeCompletion() {
-    this.#completed = !this.#completed;
   }
 
   editDetails(newTitle, newDescription, newDueDate) {
@@ -102,10 +88,6 @@ class Todo {
     if (this.priorityManager.isValid(newPriority)) this.#priority = newPriority;
     else console.warn(`Invalid priority: ${newPriority}`);
   }
-
-  get completed() {
-    return this.#completed;
-  }
 }
 
 class NoteTodo extends Todo {
@@ -115,19 +97,10 @@ class NoteTodo extends Todo {
     description,
     dueDate,
     priority = "low",
-    completed = false,
     content = "",
     priorityManager = new PriorityManager(),
   ) {
-    super(
-      id,
-      title,
-      description,
-      dueDate,
-      priority,
-      priorityManager,
-      completed,
-    );
+    super(id, title, description, dueDate, priority, priorityManager);
     this.content = content; //string
     this.type = "note";
   }
@@ -147,42 +120,13 @@ class CheckListTodo extends Todo {
     completed = false,
     priorityManager = new PriorityManager(),
   ) {
-    super(
-      id,
-      title,
-      description,
-      dueDate,
-      priority,
-      priorityManager,
-      completed,
-    );
+    super(id, title, description, dueDate, priority, priorityManager);
+    this.completed = completed;
     this.type = "checklist";
-    this.hasChecklist = true;
-    this.items = [];
-  }
-
-  addItem(text) {
-    if (text) this.items.push({ text, completed: false });
-  }
-
-  toggleItem(index) {
-    if (this.items[index])
-      this.items[index].completed = !this.items[index].completed;
-  }
-
-  removeItem(index) {
-    if (this.items[index]) {
-      this.items.splice(index, 1);
-      this.updateCompletion();
-    }
   }
 
   updateCompletion() {
-    if (this.items.length === 0) {
-      this.completed = false;
-    } else {
-      this.completed = this.items.every((item) => item.completed);
-    }
+    this.completed = !this.completed;
   }
 }
 
@@ -206,7 +150,6 @@ class TodoFactory {
           description,
           dueDate,
           priority,
-          completed,
           options.content || "",
           priorityManager,
         );

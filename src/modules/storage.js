@@ -27,6 +27,7 @@ function saveAllProjects(projects) {
       };
       if (todo instanceof NoteTodo) base.content = todo.content;
       if (todo instanceof CheckListTodo) base.items = todo.items;
+
       return base;
     }),
   }));
@@ -53,12 +54,11 @@ function loadAllProjects() {
           todoData.type,
           todoData.title,
           todoData.description,
-          todoData.dueDate,
+          new Date(todoData.dueDate),
           todoData.priority,
           todoData.completed,
         );
         if (todo instanceof NoteTodo) todo.content = todoData.content;
-        if (todo instanceof CheckListTodo) todo.items = todoData.items;
         project.addTodo(todo);
       });
       return project;
