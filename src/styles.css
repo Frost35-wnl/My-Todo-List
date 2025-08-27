@@ -99,6 +99,7 @@ ul {
 #app {
     display: flex;
     flex-direction: row;
+    max-width: 2000px;
 }
 /************* Responsive Layout *************/
 
