@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>My-Todo-List</title>
+    <script defer src="main.js"></script></head>
+    <body>
+        <div id="app">
+            <div id="project">
+                <h1 class="project-title">My-Todo-List</h1>
+                <div class="project-action">
+                    <ul class="project-action-list">
+                        <li>
+                            <button
+                                class="project-action-item"
+                                id="newProjectBtn"
+                            >
+                                Add
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                class="project-action-item project-action-item__disable"
+                                id="clearProjectBtn"
+                            >
+                                Remove
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="project-list"></ul>
+                <div></div>
+            </div>
+            <div id="container">
+                <div id="todos-tab">
+                    <h2 class="todos-tab-item" value="note">
+                        <span>Notes</span>
+                    </h2>
+                    <h2 class="todos-tab-item" value="checklist">
+                        <span>Checklist</span>
+                    </h2>
+                </div>
+                <div id="todos">
+                    <ul class="todos-empty" id="todos-content">
+                        One day this will be full of ideas
+                    </ul>
+                    <button id="open-dialog">+</button>
+                </div>
+            </div>
+        </div>
+
+        <dialog id="newTodoDiag">
+            <form id="todoForm">
+                <div>
+                    <label for="todo-input-title">Title : </label>
+                    <input
+                        type="text"
+                        id="todo-input-title"
+                        name="todo-input-title"
+                        required
+                    /><br />
+                </div>
+                <div>
+                    <label for="todo-input-date">Deadline : </label>
+                    <input
+                        type="date"
+                        id="todo-input-date"
+                        name="todo-input-date"
+                        required
+                    />
+                </div>
+                <div>
+                    <label for="todo-input-desc">Description : </label><br />
+                    <textarea
+                        id="todo-input-desc"
+                        name="todo-input-desc"
+                    ></textarea>
+                </div>
+                <div id="todo-input-prio-div"></div>
+                <div class="dialog-buttons">
+                    <button
+                        formmethod="dialog"
+                        value="cancel"
+                        class="close-dialog"
+                        id="close-dialog-todo"
+                    >
+                        Cancel
+                    </button>
+                    <button id="addTodoBtn" value="default" type="submit">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </dialog>
+        <dialog id="noteDiag">
+            <form>
+                <label for="note-text">Notes : </label>
+                <textarea id="note-text"></textarea>
+                <div class="dialog-buttons">
+                    <button
+                        formmethod="dialog"
+                        value="cancel"
+                        class="close-dialog"
+                        id="close-dialog-note"
+                    >
+                        Cancel
+                    </button>
+                    <button id="saveNote" value="default">Save</button>
+                </div>
+            </form>
+        </dialog>
+    </body>
+</html>
