@@ -114,3 +114,11 @@
 .project-item__active .project-item-description {
     color: var(--primary-color);
 }
+
+@media (max-width: 1480px) {
+    .project-action-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+    }
+}

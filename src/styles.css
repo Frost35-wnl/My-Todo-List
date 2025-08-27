@@ -101,3 +101,26 @@ ul {
     flex-direction: row;
 }
 /************* Responsive Layout *************/
+
+@media (max-width: 1000px) {
+    #app::before {
+        content: "Not compatible with small screen :[";
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-size: clamp(1rem, 2vw, 2rem);
+        z-index: 9999;
+    }
+
+    #project,
+    #container {
+        display: none;
+    }
+}

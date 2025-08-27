@@ -115,18 +115,17 @@ class ProjectController {
     if (todosTab) {
       todosTab.forEach((tab) => {
         tab.addEventListener("click", () => {
-          if (!this.currentProject) return;
-
           todosTab.forEach((tab) =>
             tab.classList.remove("todos-tab-item__active"),
           );
           tab.classList.add("todos-tab-item__active");
 
           this.currentTodoType = tab.getAttribute("value");
-          renderTodos(
-            this.currentProject.getTodos(),
-            this.currentTodoType || "",
-          );
+
+          const todos = this.currentProject
+            ? this.currentProject.getTodos()
+            : [];
+          renderTodos(todos, this.currentTodoType || "");
         });
       });
     }
@@ -157,6 +156,11 @@ class ProjectController {
       if (confirm(`Are you sure you want to delete "${todo.title}"?`)) {
         this.deleteTodo(todo);
       }
+    });
+
+    document.addEventListener("todoCompletedChanged", (e) => {
+      saveAllProjects(this.projects);
+      renderProjects(this.projects, this.currentProject, this.currentTodoType);
     });
   }
 

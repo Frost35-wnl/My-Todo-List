@@ -1,5 +1,8 @@
 import { format } from "date-fns";
 import DeleteIcon from "../assets/delete.svg";
+import { PriorityManager } from "./todo";
+const priorityManager = new PriorityManager();
+
 //Projects DOM manipulation
 
 function renderProjects(projects, currentProject = null, todoType) {
@@ -14,6 +17,7 @@ function renderProjects(projects, currentProject = null, todoType) {
   if (!currentProject) {
     clearBtn.className = "project-action-item project-action-item__disable";
     root.style.removeProperty("--project-color");
+    renderTodos([], todoType);
   } else {
     root.style.setProperty("--project-color", currentProject.color);
     clearBtn.className = "project-action-item project-action-item__remove";
@@ -85,8 +89,10 @@ function renderTodos(todos, type) {
   } else {
     todosList.textContent = "";
     todosList.className = "";
-    const filteredTodos = todos.filter((todo) => todo.type === type);
+    const filteredTodosType = todos.filter((todo) => todo.type === type);
+    const sortedTodosPrio = filteredTodosType.sort(compareTodos);
 
+    const filteredTodos = [...sortedTodosPrio];
     if (filteredTodos.length == 0) {
       todosList.textContent = "No todos found";
       todosList.className = "todos-empty";
@@ -129,9 +135,25 @@ function createTodoElement(todo) {
     const todoCompleted = document.createElement("input");
     todoCompleted.type = "checkbox";
     todoCompleted.checked = todo.completed;
-    //
+    todoCompleted.checked
+      ? (li.className = "todo-item todo-item-done")
+      : (li.className = "todo-item");
+
+    todoCompleted.addEventListener("change", () => {
+      todo.updateCompletion();
+      todoCompleted.checked = todo.completed;
+      todoCompleted.checked
+        ? (li.className = "todo-item todo-item-done")
+        : (li.className = "todo-item");
+
+      const event = new CustomEvent("todoCompletedChanged", {
+        detail: { todo },
+      });
+      document.dispatchEvent(event);
+    });
     todoCheckDiv.appendChild(todoCompleted);
     todoCheckDiv.appendChild(todoInfo);
+
     li.appendChild(todoCheckDiv);
   } else {
     li.appendChild(todoInfo);
@@ -156,10 +178,13 @@ function createTodoElement(todo) {
 
   const todoDueDate = document.createElement("div");
   todoDueDate.textContent = format(todo.dueDate, "MM/dd/yyyy");
+  todoDueDate.className = "todo-action-date";
   todoAction.appendChild(todoDueDate);
 
   const todoPriority = document.createElement("div");
-  todoPriority.textContent = todo.priority;
+  todoPriority.className = "todo-action-prio";
+  todoPriority.textContent = todo.priority.toUpperCase();
+  changePriorityColor(todoPriority, todo);
   todoAction.appendChild(todoPriority);
 
   const todoDelete = document.createElement("img");
@@ -208,3 +233,37 @@ function renderPriority(priorityManager) {
 }
 
 export { renderPriority };
+
+function changePriorityColor(prioElement, todo) {
+  const priorityTable = priorityManager.all;
+
+  switch (todo.priority) {
+    case priorityTable[0]:
+      prioElement.style.color = "green";
+      break;
+    case priorityTable[1]:
+      prioElement.style.color = "orange";
+      break;
+    case priorityTable[2]:
+      prioElement.style.color = "red";
+      break;
+    default:
+      prioElement.style.color = "var(--text-color)";
+      break;
+  }
+}
+
+function compareTodos(a, b) {
+  if (a.type == "checklist" && b.type == "checklist") {
+    const completionDiff =
+      b.completed === a.completed ? 0 : a.completed ? 1 : -1;
+    if (completionDiff !== 0) return completionDiff;
+  }
+
+  const priorities = priorityManager.all;
+  const prioDiff =
+    priorities.indexOf(b.priority) - priorities.indexOf(a.priority);
+  if (prioDiff !== 0) return prioDiff;
+
+  return new Date(b.dueDate) - new Date(b.dueDate);
+}
